@@ -164,6 +164,14 @@ public class ClassTransform {
         self.insns.add(i);
       }
       @Override
+      public void visitMultiANewArrayInsn(String descriptor, int numDimensions) {
+        ArrayList<Object> args = new ArrayList();
+        args.add(descriptor);
+        args.add((Long) (long) numDimensions);
+        DatumInsn i = DatumInsn.createOpcode("MULTIANEWARRAY", args);
+        self.insns.add(i);
+      }
+      @Override
       public void visitEnd() {
         clazz.methods.add(self); 
       } 
