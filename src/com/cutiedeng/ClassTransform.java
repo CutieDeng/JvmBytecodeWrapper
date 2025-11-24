@@ -97,6 +97,8 @@ public class ClassTransform {
     new ClassTransform().executeClazz();
   }
   public class AVisitor extends ClassVisitor {
+    public boolean firstVisitField = false;
+    public boolean firstVisitMethod = false;
     public AVisitor() {
       super(Opcodes.ASM9);
     }
@@ -123,7 +125,7 @@ public class ClassTransform {
       }
       System.err.printf("super clazz: %s%n", superName);
       System.err.printf("interfaces: %s%n", Arrays.asList(interfaces));
-      out.printf("#s(Class %s (", quotedStr(name));
+      out.printf("#s(Class %s ", quotedStr(name));
     }
     @Override
     public AnnotationVisitor visitAnnotation(String descriptor, boolean visible) {
@@ -132,6 +134,10 @@ public class ClassTransform {
     }
     @Override
     public FieldVisitor visitField(int access, String name, String descriptor, String signature, Object value) {
+      if (!firstVisitField) {
+        out.printf("(");
+        firstVisitField = true;
+      }
       System.err.printf("=== field ===%n");
       System.err.printf("field: %s (%s)%n", name, descriptor);
       // type analyzer
@@ -153,8 +159,44 @@ public class ClassTransform {
       return new FVisitor(); 
     }
     @Override
+    public MethodVisitor visitMethod(int access, String name, String descriptor, String signature, String[] exceptions) {
+      if (!firstVisitField) {
+        out.printf("() ");
+      }
+      if (!firstVisitMethod) {
+        out.printf(") (");
+        firstVisitMethod = true;
+      }
+      System.err.printf("=== method ===%n");
+      System.err.printf("method: %s (%s)%n", name, descriptor);
+      // type analyzer
+      // var tt = Type.getType(descriptor);
+      // System.err.printf("clazz name: %s%n", tt.getClassName());
+      // System.err.printf("internal name: %s%n", tt.getInternalName());
+      if (signature != null) {
+        System.err.printf("sig: %s%n", signature);
+      } else {
+        System.err.printf("!sig%n");
+      }
+      System.err.printf("access: 0x%x%n", access);
+      if (exceptions == null) { exceptions = new String[] {}; };
+      System.err.printf("exceptions: %s%n", Arrays.asList(exceptions));
+      out.printf("#s(Method %s %s ", quotedStr(name), quotedStr(descriptor));
+      out.printf("(");
+      handleAcc(out, access);
+      out.printf(") ");
+      out.printf("#f) ");
+      return null;
+    }
+    @Override
     public void visitEnd() {
       System.err.printf("=== clazz end ===%n");
+      if (!firstVisitField) {
+        out.printf("() ");
+      }
+      if (!firstVisitMethod) {
+        out.printf("() ");
+      }
       out.printf(")");
       out.printf(")%n");
     }
