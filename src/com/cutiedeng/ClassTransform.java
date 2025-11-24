@@ -148,6 +148,22 @@ public class ClassTransform {
         self.insns.add(i);
       }
       @Override
+      public void visitLookupSwitchInsn(Label dflt, int[] keys, Label[] labels) {
+        ArrayList<Object> args = new ArrayList();
+        ArrayList<Object> sArgsL = new ArrayList();
+        ArrayList<Object> sArgsR = new ArrayList();
+        for (int k: keys) {
+          sArgsL.add((Long) (long) k);
+        }
+        for (Label label: labels) {
+          sArgsR.add(label.toString());
+        }
+        args.add(sArgsL);
+        args.add(sArgsR);
+        DatumInsn i = DatumInsn.createOpcode("LOOKUPSWITCH", args);
+        self.insns.add(i);
+      }
+      @Override
       public void visitEnd() {
         clazz.methods.add(self); 
       } 
