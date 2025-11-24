@@ -66,6 +66,15 @@ public class ClassTransform {
       clazz.methods.add(m);
       return null;
     }
+    @Override
+    public void visitInnerClass(String name, String outerName, String innerName, int access) {
+      System.err.printf("=== inner class ===%n");
+      System.err.printf("name: %s(out: %s, inner: %s)%n", name, outerName, innerName);
+      System.err.printf("access: 0x%x%n", access);
+      System.err.printf("============%n%n");
+      DatumInnerClass cl = DatumInnerClass.create(name, outerName, innerName, access);
+      clazz.innerClasses.add(cl);
+    }
     public ClassBuilder() {
       super(Opcodes.ASM9);
     }

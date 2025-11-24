@@ -16,6 +16,7 @@ public class DatumClass {
   public ArrayList<DatumField> fields = new ArrayList();
   public ArrayList<DatumMethod> methods = new ArrayList();
   public ArrayList<DatumAnnotation> annotations = new ArrayList();
+  public ArrayList<DatumInnerClass> innerClasses = new ArrayList();
   public static DatumClass create(String name, String superClazzName, int access, String[] interfaces) {
     DatumClass self = new DatumClass();
     self.name = name;
@@ -44,6 +45,12 @@ public class DatumClass {
     out.printf("(");
     for (DatumAnnotation a: annotations) {
       a.toString(out);
+    }
+    out.printf(") ");
+
+    out.printf("(");
+    for (DatumInnerClass i: innerClasses) {
+      i.toString(out);
     }
     out.printf(") ");
 
