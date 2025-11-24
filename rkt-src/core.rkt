@@ -2,7 +2,7 @@
 
 (struct Class (name fields methods annotations inner-classes) #:prefab)
 (struct Field (name tt access static/init-value) #:prefab)
-(struct Method (name tt access exceptions) #:prefab)
+(struct Method (name tt access exceptions insns) #:prefab)
 (struct Annotation (name tt) #:prefab)
 (struct InnerClass (name access outer-name inner-name) #:prefab)
 

@@ -46,8 +46,8 @@ public class ClassTransform {
       System.err.printf("value: %s%n", value);
       System.err.printf("=========%n%n");
       DatumField f = DatumField.create(name, descriptor, access);
-      clazz.fields.add(f);
-      return null;
+      FieldBuilder b = new FieldBuilder(); b.self = f;
+      return b;
     }
     @Override
     public MethodVisitor visitMethod(int access, String name, String descriptor, String signature, String[] exceptions) {
@@ -63,8 +63,8 @@ public class ClassTransform {
       System.err.printf("exceptions: %s%n", Arrays.asList(exceptions));
       System.err.printf("=========%n%n");
       DatumMethod m = DatumMethod.create(name, descriptor, access);
-      clazz.methods.add(m);
-      return null;
+      MethodBuilder b = new MethodBuilder(); b.self = m;
+      return b;
     }
     @Override
     public void visitInnerClass(String name, String outerName, String innerName, int access) {
@@ -74,6 +74,33 @@ public class ClassTransform {
       System.err.printf("============%n%n");
       DatumInnerClass cl = DatumInnerClass.create(name, outerName, innerName, access);
       clazz.innerClasses.add(cl);
+    }
+    @Override
+    public void visitSource(String source, String debug) {
+      System.err.printf("=== debug ===%n");
+      System.err.printf("source: %s%n", source);
+      System.err.printf("debug: %s%n", debug);
+      System.err.printf("=============%n%n");
+    }
+    public class FieldBuilder extends FieldVisitor {
+      public DatumField self;
+      @Override
+      public void visitEnd() {
+        clazz.fields.add(self); 
+      } 
+      public FieldBuilder() {
+        super(Opcodes.ASM9);
+      }
+    }
+    public class MethodBuilder extends MethodVisitor {
+      public DatumMethod self;
+      @Override
+      public void visitEnd() {
+        clazz.methods.add(self); 
+      } 
+      public MethodBuilder() {
+        super(Opcodes.ASM9);
+      }
     }
     public ClassBuilder() {
       super(Opcodes.ASM9);
