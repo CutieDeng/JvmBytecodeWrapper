@@ -31,6 +31,12 @@ public class DatumClass {
     StringUtil.toQuotedString(out, name);
 
     out.printf("(");
+    for (String a: access) {
+      out.printf("%s ", a);
+    }
+    out.printf(") ");
+
+    out.printf("(");
     for (DatumField f: fields) {
       f.toString(out);
     }

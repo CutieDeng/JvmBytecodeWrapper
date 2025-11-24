@@ -20,9 +20,6 @@ public class ClassTransform {
     r.accept(b, 0);
     b.clazz.toString(System.out);
   }
-  public DatumClass buildDatumClass() throws IOException {
-    return null;
-  }
   public class ClassBuilder extends ClassVisitor {
     public DatumClass clazz;
     @Override 
@@ -94,6 +91,35 @@ public class ClassTransform {
     }
     public class MethodBuilder extends MethodVisitor {
       public DatumMethod self;
+      @Override
+      public void visitMethodInsn(int opcode, String owner, String name, String descriptor, boolean isInterface) {
+        ArrayList<Object> args = new ArrayList();
+        args.add(owner);
+        args.add(name);
+        args.add(descriptor);
+        args.add((Boolean) isInterface);
+        DatumInsn i = DatumInsn.create(opcode, args);
+        self.insns.add(i);
+      }
+      @Override
+      public void visitJumpInsn(int opcode, Label label) {
+        System.err.printf("=== Jump Insn ===%n");
+        System.err.printf("label: %s%n", label.toString());
+        System.err.printf("offset: %d%n", label.getOffset());
+        System.err.printf("=============%n%n");
+        ArrayList<Object> args = new ArrayList();
+        args.add(label.toString());
+        DatumInsn i = DatumInsn.create(opcode, args);
+        self.insns.add(i);
+      }
+      @Override
+      public void visitIincInsn(int varIndex, int increment) {
+        ArrayList<Object> args = new ArrayList();
+        args.add((Long) (long) varIndex);
+        args.add((Long) (long) increment);
+        DatumInsn i = DatumInsn.createOpcode("IINC", args);
+        self.insns.add(i);
+      }
       @Override
       public void visitEnd() {
         clazz.methods.add(self); 

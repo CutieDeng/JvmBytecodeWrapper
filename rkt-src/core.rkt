@@ -1,6 +1,6 @@
 #lang racket
 
-(struct Class (name fields methods annotations inner-classes) #:prefab)
+(struct Class (name access fields methods annotations inner-classes) #:prefab)
 (struct Field (name tt access static/init-value) #:prefab)
 (struct Method (name tt access exceptions insns) #:prefab)
 (struct Annotation (name tt) #:prefab)

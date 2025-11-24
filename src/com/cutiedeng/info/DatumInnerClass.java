@@ -30,7 +30,9 @@ public class DatumInnerClass {
     StringUtil.toQuotedString(out, inner);
     // access
     out.printf("(");
-    StringUtil.toQuotedStrings(out, access);
+    for (String a: access) {
+      out.printf("%s ", a);
+    }
     out.printf(") ");
     out.printf(") ");
   }

@@ -27,12 +27,18 @@ public class DatumMethod {
     StringUtil.toQuotedString(out, descriptor);
     // access
     out.printf("(");
-    StringUtil.toQuotedStrings(out, access);
+    for (String a: access) {
+      out.printf("%s ", a);
+    }
     out.printf(") ");
     // exceptions
     out.printf("() ");
     // insns
-    out.printf("() ");
+    out.printf("(");
+    for (DatumInsn i: insns) {
+      i.toString(out);
+    }
+    out.printf(") ");
     out.printf(") ");
   }
 }

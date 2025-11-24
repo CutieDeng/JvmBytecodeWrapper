@@ -26,7 +26,9 @@ public class DatumField {
     StringUtil.toQuotedString(out, descriptor);
     // access
     out.printf("(");
-    StringUtil.toQuotedStrings(out, access);
+    for (String a: access) {
+      out.printf("%s ", a);
+    }
     out.printf(") ");
     // static/init-value
     out.printf("#f ");
