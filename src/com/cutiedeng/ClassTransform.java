@@ -121,6 +121,19 @@ public class ClassTransform {
         self.insns.add(i);
       }
       @Override
+      public void visitInsn(int opcode) {
+        ArrayList<Object> args = new ArrayList();
+        DatumInsn i = DatumInsn.create(opcode, args);
+        self.insns.add(i);
+      }
+      @Override
+      public void visitLabel(Label label) {
+        ArrayList<Object> args = new ArrayList();
+        args.add(label.toString());
+        DatumInsn i = DatumInsn.createOpcode("CUTIEDENG-LABLE", args);
+        self.insns.add(i);
+      }
+      @Override
       public void visitEnd() {
         clazz.methods.add(self); 
       } 

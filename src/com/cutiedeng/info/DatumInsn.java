@@ -27,7 +27,10 @@ public class DatumInsn {
     out.printf("#s(Insn ");
     // opcode
     if (opcodeP == null) {
-      AsmOpcodeUtil.emitAsmOpcode(out, opcode);
+      if (!AsmOpcodeUtil.emitAsmOpcode(out, opcode)) {
+        out.printf("ERROR-MASK ");
+        System.err.printf("error: invalid opcode %d for insn%n", opcode);
+      }
     } else {
       out.printf("%s ", opcodeP);
     }
