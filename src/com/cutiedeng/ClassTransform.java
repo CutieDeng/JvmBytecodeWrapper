@@ -121,16 +121,30 @@ public class ClassTransform {
         self.insns.add(i);
       }
       @Override
+      public void visitLabel(Label label) {
+        ArrayList<Object> args = new ArrayList();
+        args.add(label.toString());
+        DatumInsn i = DatumInsn.createOpcode("CUTIEDENG-LABLE", args);
+        self.insns.add(i);
+      }
+      @Override
       public void visitInsn(int opcode) {
         ArrayList<Object> args = new ArrayList();
         DatumInsn i = DatumInsn.create(opcode, args);
         self.insns.add(i);
       }
       @Override
-      public void visitLabel(Label label) {
+      public void visitTableSwitchInsn(int min, int max, Label dflt, Label... labels) {
         ArrayList<Object> args = new ArrayList();
-        args.add(label.toString());
-        DatumInsn i = DatumInsn.createOpcode("CUTIEDENG-LABLE", args);
+        args.add((Long) (long) min);
+        args.add((Long) (long) max);
+        ArrayList<Object> sArgs = new ArrayList();
+        sArgs.add(dflt.toString());
+        for (Label label: labels) {
+          sArgs.add(label.toString());
+        }
+        args.add(sArgs);
+        DatumInsn i = DatumInsn.createOpcode("TABLESWITCH", args);
         self.insns.add(i);
       }
       @Override

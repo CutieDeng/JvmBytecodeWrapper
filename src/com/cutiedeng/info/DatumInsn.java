@@ -34,8 +34,11 @@ public class DatumInsn {
     } else {
       out.printf("%s ", opcodeP);
     }
+    toString(out, args);
+    out.printf(") ");
+  }
+  public void toString(PrintStream out, ArrayList<Object> args) {
     out.printf("(");
-    // args
     for (Object a: args) {
       if (a instanceof Long) {
         out.printf("%d ", a);
@@ -43,11 +46,12 @@ public class DatumInsn {
         StringUtil.toQuotedString(out, (String) a);
       } else if (a instanceof Boolean) {
         out.printf("%s ", (boolean) ((Boolean) a) ? "#t" : "#f");
+      } else if (a instanceof ArrayList) {
+        toString(out, (ArrayList<Object>) a);
       } else {
         throw new IllegalArgumentException(String.format("invalid args for #s(Insn %s .. %s #:type %s ..)", opcode, a, a.getClass()));
       }
     }
-    out.printf(") ");
     out.printf(") ");
   }
 }
