@@ -160,7 +160,7 @@ public class ClassTransform {
       public void visitJumpInsn(int opcode, Label label) {
         System.err.printf("=== Jump Insn ===%n");
         System.err.printf("label: %s%n", label.toString());
-        System.err.printf("offset: %d%n", label.getOffset());
+        // System.err.printf("offset: %d%n", label.getOffset());
         System.err.printf("=============%n%n");
         ArrayList<Object> args = new ArrayList();
         args.add(label.toString());
@@ -266,11 +266,11 @@ public class ClassTransform {
       public void visitTryCatchBlock(Label start, Label end, Label handler, String type) {
         System.err.printf("=== try-catch ===%n");
         ArrayList<Object> args = new ArrayList();
-        args.add(start);
-        args.add(end);
-        args.add(handler);
+        args.add(start.toString());
+        args.add(end.toString());
+        args.add(handler.toString());
         args.add(type);
-        DatumInsn i = DatumInsn.createOpcode("TRY_CATCH", args);
+        DatumInsn i = DatumInsn.createOpcode("TRY-CATCH-BLOCK", args);
         self.insns.add(i);
         System.err.printf("==========%n%n");
       }
@@ -283,7 +283,7 @@ public class ClassTransform {
         } else {
           System.err.printf("!sig%n");
         }
-        System.err.printf("from %s(%d) to %s(%d)%n", start, start.getOffset(), end, end.getOffset());
+        // System.err.printf("from %s(%d) to %s(%d)%n", start, start.getOffset(), end, end.getOffset());
         System.err.printf("=========%n%n");
       }
       @Override
@@ -307,6 +307,14 @@ public class ClassTransform {
     }
     public ClassBuilder() {
       super(Opcodes.ASM9);
+    }
+  }
+  
+  private void test(String x) {
+    try {
+      x.split(" "); 
+    } catch (Exception e) {
+      x.split("1");
     }
   }
 }
