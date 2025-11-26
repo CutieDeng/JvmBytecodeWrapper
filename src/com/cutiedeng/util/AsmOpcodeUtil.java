@@ -10,6 +10,7 @@ public class AsmOpcodeUtil {
     if (emitAsmOpcodeMethodInsn(out, opcode)) { return true; }    
     if (emitAsmOpcodeJumpInsn(out, opcode)) { return true; }    
     if (emitAsmOpcodeComputeInsn(out, opcode)) { return true; }    
+    if (emitAsmOpcodeCompute2Insn(out, opcode)) { return true; }    
     return false;
   }
   public static boolean emitAsmOpcodeMethodInsn(PrintStream out, int opcode) {
@@ -110,6 +111,40 @@ public class AsmOpcodeUtil {
       op = "ICONST_M1";
     } else if (opcode == Opcodes.IDIV) {
       op = "IDIV";
+    } else {
+      return false;
+    }
+    out.printf("%s ", op);
+    return true;
+  }
+  public static boolean emitAsmOpcodeCompute2Insn(PrintStream out, int opcode) {
+    String op;
+    if (opcode == Opcodes.IINC) {
+      op = "IINC"; 
+    } else if (opcode == Opcodes.ILOAD) {
+      op = "ILOAD";
+    } else if (opcode == Opcodes.IMUL) {
+      op = "IMUL";
+    } else if (opcode == Opcodes.INEG) {
+      op = "INEG";
+    } else if (opcode == Opcodes.INSTANCEOF) {
+      op = "INSTANCEOF";
+    } else if (opcode == Opcodes.IOR) {
+      op = "IOR";
+    } else if (opcode == Opcodes.IREM) {
+      op = "IREM";
+    } else if (opcode == Opcodes.ISHL) {
+      op = "ISHL";
+    } else if (opcode == Opcodes.ISHR) {
+      op = "ISHR";
+    } else if (opcode == Opcodes.ISTORE) {
+      op = "ISTORE";
+    } else if (opcode == Opcodes.ISUB) {
+      op = "ISUB";
+    } else if (opcode == Opcodes.IUSHR) {
+      op = "IUSHR";
+    } else if (opcode == Opcodes.IXOR) {
+      op = "IXOR";
     } else {
       return false;
     }
