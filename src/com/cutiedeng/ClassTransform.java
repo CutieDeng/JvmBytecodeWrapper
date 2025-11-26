@@ -6,12 +6,17 @@ import java.io.*;
 import java.util.*;
 
 import com.cutiedeng.info.*;
+import com.cutiedeng.util.*;
 
 public class ClassTransform {
   private int uselessId = 0;
   public String jarPath = "lib/asm-9.9.jar";
   public String clazzName = "com.cutiedeng.ClassTransform";
+  public static void init() throws Exception {
+    AsmOpcodeUtil.addOpcodesToName(AsmOpcodeUtil.opcodeToName);
+  }
   public static void main(String[] args) throws Throwable {
+    init();
     new ClassTransform().executeClazz();
   }
   public void executeClazz() throws IOException {
@@ -166,7 +171,7 @@ public class ClassTransform {
       public void visitLabel(Label label) {
         ArrayList<Object> args = new ArrayList();
         args.add(label.toString());
-        DatumInsn i = DatumInsn.createOpcode("CUTIEDENG-LABLE", args);
+        DatumInsn i = DatumInsn.createOpcode("CUTIEDENG-LABEL", args);
         self.insns.add(i);
       }
       void visitLdcInsnLong(long value) {
@@ -187,16 +192,16 @@ public class ClassTransform {
       @Override
       public void visitLdcInsn(Object value) {
         System.err.printf("=== Ldc Insn ===%n");
-        if (value instanceof Integer) {
-          visitLdcInsnLong((long) (int) (Integer) value);
-        } else if (value instanceof Long) {
-          visitLdcInsnLong((long) (Long) value);
-        } else if (value instanceof Float) {
-          visitLdcInsnDouble((double) (float) (Float) value);
-        } else if (value instanceof Double) {
-          visitLdcInsnDouble((double) (Double) value);
-        } else if (value instanceof String) {
-          visitLdcInsnString((String) value);
+        if (value instanceof Integer v) {
+          visitLdcInsnLong((long) (int) v);
+        } else if (value instanceof Long v) {
+          visitLdcInsnLong((long) v);
+        } else if (value instanceof Float v) {
+          visitLdcInsnDouble((double) (float) v);
+        } else if (value instanceof Double v) {
+          visitLdcInsnDouble((double) v);
+        } else if (value instanceof String v) {
+          visitLdcInsnString(v);
         } else {
           // Type, Handle, ConstantDynamic
           // Type/OBJECT, ARRAY, METHOD

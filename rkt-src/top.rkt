@@ -1,6 +1,9 @@
 #lang racket
 
 (require "core.rkt")
+(require "jvm-block.rkt")
+(require "jvm-method.rkt")
+(require "jvm-method-impl.rkt")
 
 (define a (file->value "a"))
 

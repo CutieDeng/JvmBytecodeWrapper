@@ -8,52 +8,26 @@ import java.util.*;
 import com.cutiedeng.util.*;
 
 public class DatumInsn {
-  public String opcodeP;
-  public int opcode;
+  public String opname;
   public ArrayList<Object> args;
   public static DatumInsn create(int opcode, ArrayList<Object> args) {
     DatumInsn self = new DatumInsn();
-    self.opcode = opcode;
+    self.opname = AsmOpcodeUtil.ofOpcode(opcode).get();
     self.args = args;
     return self;
   }
-  public static DatumInsn createOpcode(String opcode, ArrayList<Object> args) {
+  public static DatumInsn createOpcode(String opname, ArrayList<Object> args) {
     DatumInsn self = new DatumInsn();
-    self.opcodeP = opcode;
+    self.opname = opname;
     self.args = args;
     return self;
   }
   public void toString(PrintStream out) {
     out.printf("#s(Insn ");
     // opcode
-    if (opcodeP == null) {
-      if (!AsmOpcodeUtil.emitAsmOpcode(out, opcode)) {
-        out.printf("ERROR-MASK ");
-        System.err.printf("error: invalid opcode %d for insn%n", opcode);
-      }
-    } else {
-      out.printf("%s ", opcodeP);
-    }
-    toString(out, args);
-    out.printf(") ");
-  }
-  public void toString(PrintStream out, ArrayList<Object> args) {
-    out.printf("(");
-    for (Object a: args) {
-      if (a instanceof Long) {
-        out.printf("%d ", (Long) a);
-      } else if (a instanceof String) {
-        StringUtil.toQuotedString(out, (String) a);
-      } else if (a instanceof Boolean) {
-        out.printf("%s ", (boolean) ((Boolean) a) ? "#t" : "#f");
-      } else if (a instanceof ArrayList) {
-        toString(out, (ArrayList<Object>) a);
-      } else if (a instanceof Double) {
-        out.printf("%f ", (double ) (Double) a);
-      } else {
-        throw new IllegalArgumentException(String.format("invalid args for #s(Insn %s .. %s #:type %s ..)", opcode, a, a.getClass()));
-      }
-    }
+    out.printf("%s ", opname);
+    // args
+    StringUtil.toString(out, args, true);
     out.printf(") ");
   }
 }
