@@ -41,13 +41,15 @@ public class DatumInsn {
     out.printf("(");
     for (Object a: args) {
       if (a instanceof Long) {
-        out.printf("%d ", a);
+        out.printf("%d ", (Long) a);
       } else if (a instanceof String) {
         StringUtil.toQuotedString(out, (String) a);
       } else if (a instanceof Boolean) {
         out.printf("%s ", (boolean) ((Boolean) a) ? "#t" : "#f");
       } else if (a instanceof ArrayList) {
         toString(out, (ArrayList<Object>) a);
+      } else if (a instanceof Double) {
+        out.printf("%f ", (double ) (Double) a);
       } else {
         throw new IllegalArgumentException(String.format("invalid args for #s(Insn %s .. %s #:type %s ..)", opcode, a, a.getClass()));
       }

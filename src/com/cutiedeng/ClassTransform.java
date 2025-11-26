@@ -92,6 +92,51 @@ public class ClassTransform {
     public class MethodBuilder extends MethodVisitor {
       public DatumMethod self;
       @Override
+      public void visitCode() {
+        self.insns = new ArrayList();
+      }
+      @Override
+      public void visitFrame(int type, int numLocal, Object[] label, int numStack, Object[] stack) {
+        System.err.printf("=== frame ===%n");
+        System.err.printf("===========%n%n");
+      }
+      @Override
+      public void visitInsn(int opcode) {
+        ArrayList<Object> args = new ArrayList();
+        DatumInsn i = DatumInsn.create(opcode, args);
+        self.insns.add(i);
+      }
+      @Override
+      public void visitIntInsn(int opcode, int operand) {
+        ArrayList<Object> args = new ArrayList();
+        args.add((Long) (long) operand);
+        DatumInsn i = DatumInsn.create(opcode, args);
+        self.insns.add(i);
+      }
+      @Override
+      public void visitVarInsn(int opcode, int varIndex) {
+        ArrayList<Object> args = new ArrayList();
+        args.add((Long) (long) varIndex);
+        DatumInsn i = DatumInsn.create(opcode, args);
+        self.insns.add(i);
+      }
+      @Override 
+      public void visitTypeInsn(int opcode, String type) {
+        ArrayList<Object> args = new ArrayList();
+        args.add(type);
+        DatumInsn i = DatumInsn.create(opcode, args);
+        self.insns.add(i);
+      }
+      @Override
+      public void visitFieldInsn(int opcode, String owner, String name, String descriptor) {
+        ArrayList<Object> args = new ArrayList();
+        args.add(owner);
+        args.add(name);
+        args.add(descriptor);
+        DatumInsn i = DatumInsn.create(opcode, args);
+        self.insns.add(i);
+      }
+      @Override
       public void visitMethodInsn(int opcode, String owner, String name, String descriptor, boolean isInterface) {
         ArrayList<Object> args = new ArrayList();
         args.add(owner);
@@ -100,6 +145,11 @@ public class ClassTransform {
         args.add((Boolean) isInterface);
         DatumInsn i = DatumInsn.create(opcode, args);
         self.insns.add(i);
+      }
+      @Override
+      public void visitInvokeDynamicInsn(String name, String descriptor, Handle bootstrapMethodHandle, Object... bootstrapMethodArguments) {
+        System.err.printf("=== Dynamic Insn ===%n");
+        System.err.printf("========%n%n");
       }
       @Override
       public void visitJumpInsn(int opcode, Label label) {
@@ -113,24 +163,53 @@ public class ClassTransform {
         self.insns.add(i);
       }
       @Override
-      public void visitIincInsn(int varIndex, int increment) {
-        ArrayList<Object> args = new ArrayList();
-        args.add((Long) (long) varIndex);
-        args.add((Long) (long) increment);
-        DatumInsn i = DatumInsn.createOpcode("IINC", args);
-        self.insns.add(i);
-      }
-      @Override
       public void visitLabel(Label label) {
         ArrayList<Object> args = new ArrayList();
         args.add(label.toString());
         DatumInsn i = DatumInsn.createOpcode("CUTIEDENG-LABLE", args);
         self.insns.add(i);
       }
-      @Override
-      public void visitInsn(int opcode) {
+      void visitLdcInsnLong(long value) {
         ArrayList<Object> args = new ArrayList();
-        DatumInsn i = DatumInsn.create(opcode, args);
+        args.add((Long) value);
+        DatumInsn i = DatumInsn.createOpcode("LDC", args);
+      }
+      void visitLdcInsnDouble(double value) {
+        ArrayList<Object> args = new ArrayList();
+        args.add((Double) value);
+        DatumInsn i = DatumInsn.createOpcode("LDC", args);
+      }
+      void visitLdcInsnString(String value) {
+        ArrayList<Object> args = new ArrayList();
+        args.add(value);
+        DatumInsn i = DatumInsn.createOpcode("LDC", args);
+      }
+      @Override
+      public void visitLdcInsn(Object value) {
+        System.err.printf("=== Ldc Insn ===%n");
+        if (value instanceof Integer) {
+          visitLdcInsnLong((long) (int) (Integer) value);
+        } else if (value instanceof Long) {
+          visitLdcInsnLong((long) (Long) value);
+        } else if (value instanceof Float) {
+          visitLdcInsnDouble((double) (float) (Float) value);
+        } else if (value instanceof Double) {
+          visitLdcInsnDouble((double) (Double) value);
+        } else if (value instanceof String) {
+          visitLdcInsnString((String) value);
+        } else {
+          // Type, Handle, ConstantDynamic
+          // Type/OBJECT, ARRAY, METHOD
+          System.err.printf("error: invalid operand for LDC: %s/%s%n", value.getClass(), value);
+        }
+        System.err.printf("==========%n%n");
+      }
+      @Override
+      public void visitIincInsn(int varIndex, int increment) {
+        ArrayList<Object> args = new ArrayList();
+        args.add((Long) (long) varIndex);
+        args.add((Long) (long) increment);
+        DatumInsn i = DatumInsn.createOpcode("IINC", args);
         self.insns.add(i);
       }
       @Override
@@ -170,6 +249,48 @@ public class ClassTransform {
         args.add((Long) (long) numDimensions);
         DatumInsn i = DatumInsn.createOpcode("MULTIANEWARRAY", args);
         self.insns.add(i);
+      }
+      @Override
+      public AnnotationVisitor visitInsnAnnotation(int typeRef, TypePath typePath, String descriptor, boolean visible) {
+        if (!visible) return null;
+        System.err.printf("=== ANNOTATION ===%n");
+        System.err.printf("=========%n%n");
+        return null;
+      }
+      @Override
+      public void visitTryCatchBlock(Label start, Label end, Label handler, String type) {
+        System.err.printf("=== try-catch ===%n");
+        ArrayList<Object> args = new ArrayList();
+        args.add(start);
+        args.add(end);
+        args.add(handler);
+        args.add(type);
+        DatumInsn i = DatumInsn.createOpcode("TRY_CATCH", args);
+        self.insns.add(i);
+        System.err.printf("==========%n%n");
+      }
+      @Override
+      public void visitLocalVariable(String name, String descriptor, String signature, Label start, Label end, int index) {
+        System.err.printf("=== local var '%s' ===%n", name);
+        System.err.printf("name = %s, descriptor = %s, index: %d%n", name, descriptor, index);
+        if (signature != null) {
+          System.err.printf("sig: %s%n", signature);
+        } else {
+          System.err.printf("!sig%n");
+        }
+        System.err.printf("from %s(%d) to %s(%d)%n", start, start.getOffset(), end, end.getOffset());
+        System.err.printf("=========%n%n");
+      }
+      @Override
+      public void visitLineNumber(int line, Label start) {
+        System.err.printf("=== line number %d <- %s ===%n", line, start);
+      }
+      @Override
+      public void visitMaxs(int maxStack, int maxLocals) {
+        System.err.printf("=== summary ===%n");
+        System.err.printf("max stack: %d%n", maxStack);
+        System.err.printf("max locals: %d%n", maxLocals);
+        System.err.printf("=========%n%n");
       }
       @Override
       public void visitEnd() {

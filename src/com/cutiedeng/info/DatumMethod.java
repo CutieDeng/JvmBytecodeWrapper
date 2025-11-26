@@ -11,7 +11,7 @@ public class DatumMethod {
   public String name;
   public String descriptor;
   public ArrayList<String> access = new ArrayList();
-  public ArrayList<DatumInsn> insns = new ArrayList();
+  public ArrayList<DatumInsn> insns;
   public static DatumMethod create(String name, String descriptor, int access) {
     DatumMethod self = new DatumMethod();
     self.name = name;
