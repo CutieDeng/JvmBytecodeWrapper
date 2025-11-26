@@ -8,6 +8,8 @@ import java.io.*;
 public class AsmOpcodeUtil {
   public static boolean emitAsmOpcode(PrintStream out, int opcode) {
     if (emitAsmOpcodeMethodInsn(out, opcode)) { return true; }    
+    if (emitAsmOpcodeJumpInsn(out, opcode)) { return true; }    
+    if (emitAsmOpcodeComputeInsn(out, opcode)) { return true; }    
     return false;
   }
   public static boolean emitAsmOpcodeMethodInsn(PrintStream out, int opcode) {
@@ -64,6 +66,50 @@ public class AsmOpcodeUtil {
       op = "IFNULL";
     } else if (opcode == Opcodes.IFNONNULL) {
       op = "IFNONNULL";
+    } else {
+      return false;
+    }
+    out.printf("%s ", op);
+    return true;
+  }
+  public static boolean emitAsmOpcodeComputeInsn(PrintStream out, int opcode) {
+    String op;
+    if (opcode == Opcodes.I2B) {
+      op = "I2B"; 
+    } else if (opcode == Opcodes.I2C) {
+      op = "I2C";
+    } else if (opcode == Opcodes.I2D) {
+      op = "I2D";
+    } else if (opcode == Opcodes.I2F) {
+      op = "I2F";
+    } else if (opcode == Opcodes.I2L) {
+      op = "I2L";
+    } else if (opcode == Opcodes.I2S) {
+      op = "I2S";
+    } else if (opcode == Opcodes.IADD) {
+      op = "IADD";
+    } else if (opcode == Opcodes.IALOAD) {
+      op = "IALOAD";
+    } else if (opcode == Opcodes.IAND) {
+      op = "IAND";
+    } else if (opcode == Opcodes.IASTORE) {
+      op = "IASTORE";
+    } else if (opcode == Opcodes.ICONST_0) {
+      op = "ICONST_0";
+    } else if (opcode == Opcodes.ICONST_1) {
+      op = "ICONST_1";
+    } else if (opcode == Opcodes.ICONST_2) {
+      op = "ICONST_2";
+    } else if (opcode == Opcodes.ICONST_3) {
+      op = "ICONST_3";
+    } else if (opcode == Opcodes.ICONST_4) {
+      op = "ICONST_4";
+    } else if (opcode == Opcodes.ICONST_5) {
+      op = "ICONST_5";
+    } else if (opcode == Opcodes.ICONST_M1) {
+      op = "ICONST_M1";
+    } else if (opcode == Opcodes.IDIV) {
+      op = "IDIV";
     } else {
       return false;
     }
