@@ -99,6 +99,7 @@ public class ClassTransform {
       @Override
       public void visitCode() {
         self.insns = new ArrayList();
+        self.vars = new ArrayList();
       }
       @Override
       public void visitFrame(int type, int numLocal, Object[] label, int numStack, Object[] stack) {
@@ -276,6 +277,13 @@ public class ClassTransform {
       }
       @Override
       public void visitLocalVariable(String name, String descriptor, String signature, Label start, Label end, int index) {
+        DatumMethod.DatumLocalVar v = self.new DatumLocalVar();
+        v.name = name;
+        v.descriptor = descriptor;
+        v.start = start.toString();
+        v.end = end.toString();
+        v.index = (long) index;
+        self.vars.add(v);
         System.err.printf("=== local var '%s' ===%n", name);
         System.err.printf("name = %s, descriptor = %s, index: %d%n", name, descriptor, index);
         if (signature != null) {
